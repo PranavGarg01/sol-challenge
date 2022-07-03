@@ -1,11 +1,14 @@
 import { ethers } from 'hardhat'
 import { expect } from 'chai'
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
-import { WeirdVaultChallenge } from '../typechain-types'
+import { WeirdVaultChallenge, ForceSender } from '../typechain-types'
+
+const toWei = ethers.utils.parseEther
 
 describe('WeirdVaultChallenge', async function () {
   let player: SignerWithAddress
   let challenge: WeirdVaultChallenge
+  let fs: ForceSender
 
   beforeEach(async function () {
     ;[player] = await ethers.getSigners()
@@ -15,6 +18,11 @@ describe('WeirdVaultChallenge', async function () {
   })
 
   it('Attack', async function () {
+    const Fs = await ethers.getContractFactory('ForceSender')
+    fs = (await Fs.deploy(challenge.address, {
+      value: toWei('100'),
+    })) as ForceSender
+    await challenge.complete()
     expect(await challenge.isSolved()).to.be.true
   })
 })

@@ -15,8 +15,8 @@ describe('GuessTheNumberChallenge', async function () {
   })
 
   it('Attack', async function () {
-    const a = 0 // input a number
-    const b = 0 // input a number
+    const a = 999 // input a number
+    const b = await challenge.MAX_UINT256(); // get the value of uint256(-1)
     await challenge.input(a, b)
     expect(await challenge.isSolved()).to.be.true
   })
